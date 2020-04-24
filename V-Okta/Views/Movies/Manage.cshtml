@@ -1,0 +1,45 @@
+﻿
+@{
+    ViewData["Title"] = "Manage";
+}
+
+@model V_Okta.Models.ManageMovieModel
+
+<div class="row">
+    <div class="col-lg-12">
+
+        @if (!Model.MovieFound)
+        {
+            <div class="alert alert-danger">
+                We're sorry but that movie wasn't found.  If you would like to add a movie <a href="~/Movies/Manage">Click here.</a>  Otherwise return to the <a href="~/Movies/Index">Movies List.</a>
+            </div>
+        }
+        else
+        {
+            using (Html.BeginForm("SaveMovie", "Movies", FormMethod.Post))
+            {
+                <div class="card">
+                    <div class="card-header">
+
+                        @Html.HiddenFor(r => r.Movie.Id)
+                        @if (!Model.NewMovie)
+                        {
+                            <h4> @Model.Movie.Title </h4>
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(r => r.Movie.Title, null, new { @class = "form-control", @placeholder = "Enter a Title" })
+                        }
+                    </div>
+                    <div class="card-body">
+                        @Html.TextAreaFor(r => r.Movie.Description, 10, 1, new { @class = "form-control", @placeholder = "Enter a Description" })
+                    </div>
+                    <div class="card-footer">
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
