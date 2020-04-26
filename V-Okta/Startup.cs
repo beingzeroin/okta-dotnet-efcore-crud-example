@@ -45,7 +45,31 @@ namespace V_Okta
             {
                 OktaDomain = oktaSettings.OktaDomain,
                 ClientId = oktaSettings.ClientId,
-                ClientSecret = oktaSettings.ClientSecret
+                ClientSecret = oktaSettings.ClientSecret,
+                OnUserInformationReceived = context =>
+               {
+                   var values = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(context.User.RootElement.ToString());
+                   string username = "";
+                   bool hasUsername = values.TryGetValue("preferred_username", out username);
+
+                   if (hasUsername)
+                   {
+                       var dbContext = context.HttpContext.RequestServices.GetService<Data.VoktaContext>();
+                       var user = dbContext.Users.Where(r => r.Username.Equals(username)).FirstOrDefault();
+
+                       if (user == null)
+                       {
+                           dbContext.Users.Add(new Data.Entities.User()
+                           {
+                               Username = username
+                           });
+
+                           dbContext.SaveChanges();
+                       }
+                   }
+
+                   return Task.CompletedTask;
+               }
             });
 
             services.AddDbContext<Data.VoktaContext>(options =>

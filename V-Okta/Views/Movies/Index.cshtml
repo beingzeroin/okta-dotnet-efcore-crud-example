@@ -27,26 +27,26 @@
                         <td>
                             @if (movie.UserVote == 1)
                             {
-                                <img src="~/images/caret-up-fill.svg" />
+                                <img id="@movie.Id-upvote-image" onclick="upvoteMovie(@movie.Id)" src="~/images/caret-up-fill.svg" />
                             }
                             else
                             {
-                                <img src="~/images/caret-up.svg" />
+                                <img id="@movie.Id-upvote-image" onclick="upvoteMovie(@movie.Id)" src="~/images/caret-up.svg" />
                             }
 
                             @if (movie.UserVote == -1)
                             {
-                                <img src="~/images/caret-down-fill.svg" />
+                                <img id="@movie.Id-downvote-image" onclick="downvoteMovie(@movie.Id)" src="~/images/caret-down-fill.svg" />
                             }
                             else
                             {
-                                <img src="~/images/caret-down.svg" />
+                                <img id="@movie.Id-downvote-image" onclick="downvoteMovie(@movie.Id)" src="~/images/caret-down.svg" />
                             }
 
                         </td>
                         <td>@movie.Title</td>
                         <td>@movie.Description</td>
-                        <td>@movie.CurrentVotes</td>
+                        <td id="@movie.Id-CurrentVotes">@movie.CurrentVotes</td>
                         <td>
                             <a href="~/Movies/Manage/@movie.Id" class="btn btn-sm btn-primary">Edit</a>
                         </td>
@@ -55,10 +55,48 @@
                 }
             </tbody>
         </table>
-
-
     </div>
 </div>
+
+<script>
+
+    function upvoteMovie(id) {
+        var xhr = $.post("/Movies/UpvoteMovie", { id: id })
+            .done(function (data) {
+                if (data.success) {
+                    $('#' + id + '-CurrentVotes').text(data.currentVotes);
+
+                    if (data.userVote == 0) {
+                        $('#' + id + '-upvote-image').prop('src', "/images/caret-up.svg");
+                        $('#' + id + '-downvote-image').prop('src', "/images/caret-down.svg");
+                    }
+                    else {
+                        $('#' + id + '-upvote-image').prop('src', "/images/caret-up-fill.svg");
+                        $('#' + id + '-downvote-image').prop('src', "/images/caret-down.svg");
+                    }
+                }
+            });
+    }
+
+
+    function downvoteMovie(id) {
+        var xhr = $.post("/Movies/DownvoteMovie", { id: id })
+            .done(function (data) {
+                if (data.success) {
+                    $('#' + id + '-CurrentVotes').text(data.currentVotes);
+
+                    if (data.userVote == 0) {
+                        $('#' + id + '-downvote-image').prop('src', "/images/caret-down.svg");
+                        $('#' + id + '-upvote-image').prop('src', "/images/caret-up.svg");
+                    }
+                    else {
+                        $('#' + id + '-downvote-image').prop('src', "/images/caret-down-fill.svg");
+                        $('#' + id + '-upvote-image').prop('src', "/images/caret-up.svg");
+                    }
+                }
+            });
+    }
+</script>
 
 
 
