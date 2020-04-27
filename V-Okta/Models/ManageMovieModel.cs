@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace V_Okta.Models
+﻿namespace V_Okta.Models
 {
     public class ManageMovieModel
     {
