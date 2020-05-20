@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Okta.AspNetCore;
-
+using Microsoft.AspNetCore.Authentication;
 
 namespace V_Okta
 {
@@ -46,11 +46,9 @@ namespace V_Okta
                 ClientSecret = oktaSettings.ClientSecret,
                 OnUserInformationReceived = context =>
                {
-                   var values = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(context.User.RootElement.ToString());
-                   string username = "";
-                   bool hasUsername = values.TryGetValue("preferred_username", out username);
+                   string username = context.User.RootElement.GetString("preferred_username");
 
-                   if (hasUsername)
+                   if (!String.IsNullOrEmpty(username)) 
                    {
                        var dbContext = context.HttpContext.RequestServices.GetService<Data.VoktaContext>();
                        var user = dbContext.Users.Where(r => r.Username.Equals(username)).FirstOrDefault();

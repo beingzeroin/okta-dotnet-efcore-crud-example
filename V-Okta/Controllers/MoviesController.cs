@@ -108,12 +108,15 @@ namespace V_Okta.Controllers
 
                 if (vote == null)
                 {
-                    _context.Votes.Add(new Data.Entities.Vote()
+                    vote = new Data.Entities.Vote()
                     {
                         MovieId = id,
                         UserId = getUserId(),
                         Value = 1
-                    });
+                    };
+
+
+                    _context.Votes.Add(vote);
 
                     movie.CurrentVotes += 1;
                 }

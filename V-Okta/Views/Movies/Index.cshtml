@@ -14,7 +14,7 @@
                 <tr>
                     <th>Vote</th>
                     <th>Movie</th>
-                    <th>Desciprtion</th>
+                    <th>Description</th>
                     <th>Current Votes</th>
                     <th>Edit Movie</th>
 
@@ -27,20 +27,19 @@
                         <td>
                             @if (movie.UserVote == 1)
                             {
-                                <img id="@movie.Id-upvote-image" onclick="upvoteMovie(@movie.Id)" src="~/images/caret-up-fill.svg" />
+                                <i id="@movie.Id-upvote" class="fa fa-chevron-up text-success" onclick="upvoteMovie(@movie.Id)"></i>
                             }
                             else
                             {
-                                <img id="@movie.Id-upvote-image" onclick="upvoteMovie(@movie.Id)" src="~/images/caret-up.svg" />
+                                <i id="@movie.Id-upvote" class="fa fa-chevron-up" onclick="upvoteMovie(@movie.Id)"></i>
                             }
 
                             @if (movie.UserVote == -1)
                             {
-                                <img id="@movie.Id-downvote-image" onclick="downvoteMovie(@movie.Id)" src="~/images/caret-down-fill.svg" />
-                            }
+                                <i id="@movie.Id-downvote" class="fa fa-chevron-down text-danger" onclick="downvoteMovie(@movie.Id)"></i> }
                             else
                             {
-                                <img id="@movie.Id-downvote-image" onclick="downvoteMovie(@movie.Id)" src="~/images/caret-down.svg" />
+                                <i id="@movie.Id-downvote" class="fa fa-chevron-down" onclick="downvoteMovie(@movie.Id)"></i>
                             }
 
                         </td>
@@ -63,16 +62,18 @@
     function upvoteMovie(id) {
         var xhr = $.post("/Movies/UpvoteMovie", { id: id })
             .done(function (data) {
+                console.log(data);
+
                 if (data.success) {
                     $('#' + id + '-CurrentVotes').text(data.currentVotes);
-
+                   
                     if (data.userVote == 0) {
-                        $('#' + id + '-upvote-image').prop('src', "/images/caret-up.svg");
-                        $('#' + id + '-downvote-image').prop('src', "/images/caret-down.svg");
+                        $('#' + id + '-upvote').removeClass('text-success');
+                        $('#' + id + '-downvote').removeClass('text-danger');
                     }
                     else {
-                        $('#' + id + '-upvote-image').prop('src', "/images/caret-up-fill.svg");
-                        $('#' + id + '-downvote-image').prop('src', "/images/caret-down.svg");
+                        $('#' + id + '-upvote').addClass('text-success');
+                        $('#' + id + '-downvote').removeClass('text-danger');
                     }
                 }
             });
@@ -86,12 +87,12 @@
                     $('#' + id + '-CurrentVotes').text(data.currentVotes);
 
                     if (data.userVote == 0) {
-                        $('#' + id + '-downvote-image').prop('src', "/images/caret-down.svg");
-                        $('#' + id + '-upvote-image').prop('src', "/images/caret-up.svg");
+                        $('#' + id + '-downvote').removeClass('text-danger');
+                        $('#' + id + '-upvote').removeClass('text-success');
                     }
                     else {
-                        $('#' + id + '-downvote-image').prop('src', "/images/caret-down-fill.svg");
-                        $('#' + id + '-upvote-image').prop('src', "/images/caret-up.svg");
+                        $('#' + id + '-downvote').addClass('text-danger');
+                        $('#' + id + '-upvote').removeClass('text-success');
                     }
                 }
             });
